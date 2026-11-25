@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Секреты и локальная конфигурация
+.env
+.env.*
+!.env.example
+
+# Данные
+data/raw/
+data/processed/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# IDE и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
