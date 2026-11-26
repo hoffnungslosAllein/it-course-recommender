@@ -1,0 +1,79 @@
+# Конфигурация проекта CourseMatch (пакет skillrec).
+# Версия 1. Уточняется по мере работы с реальными данными.
+# Секреты (client_id, client_secret, токены) сюда не записываются — только в .env.
+
+paths:
+  raw: data/raw          # неизменяемые ответы API
+  db: data/db/skillrec.db
+  dictionary: data/dictionary
+
+http:
+  user_agent: "CourseMatch/0.1 (diploma research project; https://github.com/hoffnungslosAllein/it-course-recommender)"
+  timeout: 30            # секунд на один запрос
+  retries: 3
+  delay: 0.5             # секунд между запросами
+
+hh:
+  base_url: https://api.hh.ru
+  token_url: https://api.hh.ru/token
+  area: 113              # 113 — Россия
+  per_page: 100          # максимум для /vacancies
+  max_pages: 20          # глубина выдачи ограничена 2000 результатами
+
+stepik:
+  base_url: https://stepik.org
+  per_page: 20
+  language: ru
+
+# Черновой список ролей и поисковых запросов.
+# Запросы уточняются после первой реальной выдачи hh.ru.
+# professional_role не указан: значения будут добавлены после сверки
+# со справочником /professional_roles на этапе сбора вакансий.
+roles:
+  - id: backend_python
+    title: Backend Python
+    queries:
+      - python разработчик
+      - backend python
+      - django разработчик
+      - fastapi разработчик
+
+  - id: frontend
+    title: Frontend
+    queries:
+      - frontend разработчик
+      - javascript разработчик
+      - react разработчик
+      - верстальщик
+
+  - id: data_scientist
+    title: Data Scientist
+    queries:
+      - data scientist
+      - ml инженер
+      - machine learning разработчик
+      - специалист по данным
+
+  - id: data_analyst
+    title: Data Analyst
+    queries:
+      - аналитик данных
+      - data analyst
+      - bi аналитик
+      - продуктовый аналитик
+
+  - id: devops
+    title: DevOps
+    queries:
+      - devops инженер
+      - системный администратор linux
+      - sre инженер
+      - kubernetes инженер
+
+  - id: qa_automation
+    title: QA Automation
+    queries:
+      - qa automation
+      - тестировщик автоматизатор
+      - автотесты
+      - инженер по тестированию

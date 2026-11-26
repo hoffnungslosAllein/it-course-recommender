@@ -85,14 +85,57 @@ score(r, c) = Σ w(r, s) для s ∈ S(c) ∩ S(r)  /  Σ w(r, s) для s ∈ 
 
 ```
 skillrec/
-  collect/      сбор данных из внешних источников
-  extract/      извлечение и нормализация навыков
-  profile/      построение профиля компетенций роли
-  match/        сопоставление роли и курсов
-  recommend/    ранжирование и формирование рекомендаций
-  eval/         экспериментальная оценка
-data/           собранные данные и словарь навыков
-config.yaml     конфигурация
+  cli.py         командный интерфейс
+  config.py      загрузка и проверка config.yaml
+  db.py          подключение к SQLite и создание схемы
+  schema.sql     схема базы данных
+  collect/       сбор данных (планируется)
+  extract/       извлечение и нормализация навыков (планируется)
+  profile/       профиль компетенций роли (планируется)
+  match/         сопоставление роли и курсов (планируется)
+  recommend/     ранжирование (планируется)
+  eval/          экспериментальная оценка (планируется)
+data/
+  raw/           сырые ответы API, в git не попадают
+  db/            файл SQLite, в git не попадает
+  dictionary/    словарь навыков (планируется)
+tests/           тесты
+config.yaml      конфигурация
+```
+
+## Запуск
+
+Требуется Python 3.10 или новее.
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+python -m pip install -r requirements-dev.txt
+```
+
+Создать базу данных:
+
+```powershell
+python -m skillrec init-db
+```
+
+Повторный запуск безопасен: схема применяется к существующей базе. Пересоздать
+базу с нуля:
+
+```powershell
+python -m skillrec init-db --force
+```
+
+Список команд и их описание:
+
+```powershell
+python -m skillrec --help
+```
+
+Запустить тесты:
+
+```powershell
+pytest
 ```
 
 ## Документация

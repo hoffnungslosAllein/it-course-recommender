@@ -4,7 +4,7 @@
 Хронология работ — в [WORK_LOG.md](WORK_LOG.md).
 
 **Дата обновления:** 2026-11-26
-**Текущий этап:** 0a завершён, 0b не начат
+**Текущий этап:** 0b завершён, этап 1 не начат
 
 ---
 
@@ -83,31 +83,38 @@
 
 ---
 
-## 4. Планируемая структура
+## 4. Структура проекта
 
 ```
 skillrec/
-  config.py        загрузка и валидация config.yaml
-  db.py            подключение, DDL, инициализация
-  collect/         hh.py, stepik.py, cleaning.py
-  extract/         dictionary.py, matcher.py
-  profile/         build.py
-  match/           coverage.py, baselines.py, embeddings.py
-  recommend/       ranker.py, greedy.py
-  eval/            labels.py, metrics.py, report.py
-  cli.py           python -m skillrec <stage>
+  cli.py           командный интерфейс, 6 подкоманд
+  config.py        загрузка и проверка config.yaml
+  db.py            подключение к SQLite, init-db
+  schema.sql       схема БД версии 1
+  collect/         сбор данных (этапы 1–2)
+  extract/         извлечение навыков (этап 3)
+  profile/         профиль роли (этап 3)
+  match/           сопоставление (этап 4)
+  recommend/       ранжирование (этап 4)
+  eval/            оценка (этап 5)
 data/
-  raw/             неизменяемые ответы API
-  dictionary/      словарь навыков (версионируется)
-  db/              файл SQLite
-tests/
+  raw/             сырые ответы API, в git не попадают
+  db/              файл SQLite, в git не попадает
+  dictionary/      словарь навыков (этап 3)
+tests/             тесты конфига и БД
 config.yaml
+pytest.ini
 ```
 
-Схема БД (эскиз): `roles`, `role_queries`, `vacancies`, `skills`, `skill_aliases`,
-`vacancy_skills`, `courses`, `course_skills`, `role_profiles`, `recommendations`,
-`eval_labels`, `eval_metrics`. Первичный ключ вакансии — `source:source_id`.
+Схема БД: 13 таблиц (`runs`, `roles`, `role_queries`, `vacancies`, `skills`,
+`skill_aliases`, `vacancy_skills`, `courses`, `course_skills`, `role_profiles`,
+`recommendations`, `eval_labels`, `eval_metrics`). Версия хранится в
+`PRAGMA user_version`. Первичный ключ вакансии и курса — `source:source_id`.
 Стадии, влияющие на результаты, пишут `run_id` с хэшем параметров.
+
+Стиль кода: простой, без лишних абстракций — конфиг в виде словаря, проверки
+отдельными функциями, минимум вспомогательных конструкций. Причина: код должен
+быть объясним построчно на защите.
 
 ---
 
@@ -115,9 +122,10 @@ config.yaml
 
 - URL: https://github.com/hoffnungslosAllein/it-course-recommender
 - Ветка: `main`, публичный
-- Последний коммит: `3e67f62` (до коммита с записью о поданной заявке)
+- Последний коммит: `57bbc7c`
 - Файлы проекта: `README.md`, `PROJECT_CONTEXT.md`, `WORK_LOG.md`, `.gitignore`,
-  `docs/hh_application.md`
+  `config.yaml`, `requirements.txt`, `requirements-dev.txt`, `pytest.ini`,
+  `skillrec/`, `tests/`, `docs/hh_application.md`
 - Локально, вне репозитория: `project.md`, `ПЛАН_10_11_2026.txt`,
   `NEW_SESSION_HI.txt`, `PromptGen.md`
 - Автор коммитов: `BanzaiRus <evgensirotin@mail.ru>` (глобальная git-конфигурация;
@@ -163,13 +171,13 @@ config.yaml
 
 ## 8. Следующие шаги
 
-1. **Этап 0b:** пакет `skillrec`, `config.yaml` (роли и поисковые запросы), DDL и
-   инициализация SQLite, CLI-скелет, `requirements.txt`, каркас тестов, README-раздел
-   о запуске.
-   Критерий готовности: `python -m skillrec init-db` создаёт БД,
-   `python -m skillrec --help` показывает стадии.
-2. **Сбор курсов Stepik** и замер заполненности полей на реальных данных.
-3. **Сбор вакансий hh.ru** — после одобрения заявки и получения токена.
+1. **Этап 1 — сбор курсов Stepik** в `data/raw/stepik/` и замер заполненности
+   полей (`acquired_skills`, `description`, `requirements`, `target_audience`).
+   Критерий готовности: сырые ответы сохранены, курсы записаны в `courses`,
+   посчитана доля заполненных полей.
+2. **Этап 2 — сбор вакансий hh.ru** после одобрения заявки и получения токена.
+3. Далее по плану: словарь навыков → извлечение навыков → профили ролей →
+   сопоставление → рекомендации → экспериментальная оценка.
 
 ---
 
