@@ -12,6 +12,7 @@ venv/
 .env
 .env.*
 !.env.example
+API.txt
 
 # Данные
 data/raw/
